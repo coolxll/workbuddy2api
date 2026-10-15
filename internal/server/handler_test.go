@@ -151,6 +151,7 @@ func TestAdminPageAndAPIAuth(t *testing.T) {
 	h.ServeHTTP(authorized, authorizedReq)
 	if authorized.Code != http.StatusOK || !strings.Contains(authorized.Body.String(), `"uid":"u1"`) {
 		t.Fatalf("admin API code=%d body=%s", authorized.Code, authorized.Body.String())
+	}
 }
 
 // errReader 固定返回 err 的 io.Reader：模拟客户端发送 body 中途断流。

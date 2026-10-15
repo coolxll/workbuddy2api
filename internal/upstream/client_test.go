@@ -540,6 +540,9 @@ func TestFetchModelsEffortsDriveBodyDowngrade(t *testing.T) {
 
 func TestFetchModelsDiscoversAgentsUnion(t *testing.T) {
 	c := testClient(func(r *http.Request) (*http.Response, error) {
+		if strings.HasSuffix(r.URL.Path, "/v3/config") {
+			return jsonResp(404, `{"code":404,"msg":"not found"}`), nil
+		}
 		return jsonResp(200, `{"code":0,"data":{"models":[
 			{"id":"cli-model","name":"CLI","maxInputTokens":65536},
 			{"id":"agent-only","name":"Internal","maxInputTokens":131072,"maxOutputTokens":8192},
@@ -571,6 +574,9 @@ func TestFetchModelsDiscoversAgentsUnion(t *testing.T) {
 
 func TestFetchModelsFallsBackToCatalogWithoutAgents(t *testing.T) {
 	c := testClient(func(r *http.Request) (*http.Response, error) {
+		if strings.HasSuffix(r.URL.Path, "/v3/config") {
+			return jsonResp(404, `{"code":404,"msg":"not found"}`), nil
+		}
 		return jsonResp(200, `{"code":0,"data":{"models":[
 			{"id":"enabled-model","maxInputTokens":65536},
 			{"id":"disabled-model","disabled":true}
@@ -588,6 +594,9 @@ func TestFetchModelsFallsBackToCatalogWithoutAgents(t *testing.T) {
 
 func TestFetchModelsWorksWithoutCLIAgent(t *testing.T) {
 	c := testClient(func(r *http.Request) (*http.Response, error) {
+		if strings.HasSuffix(r.URL.Path, "/v3/config") {
+			return jsonResp(404, `{"code":404,"msg":"not found"}`), nil
+		}
 		return jsonResp(200, `{"code":0,"data":{"models":[{"id":"available-model"}],"agents":[{"name":"codebuddy","models":["available-model"]}]}}`), nil
 	})
 
@@ -602,6 +611,9 @@ func TestFetchModelsWorksWithoutCLIAgent(t *testing.T) {
 
 func TestFetchModelsDoesNotFallbackWhenAgentsOnlyReferenceUnavailableModels(t *testing.T) {
 	c := testClient(func(r *http.Request) (*http.Response, error) {
+		if strings.HasSuffix(r.URL.Path, "/v3/config") {
+			return jsonResp(404, `{"code":404,"msg":"not found"}`), nil
+		}
 		return jsonResp(200, `{"code":0,"data":{"models":[
 			{"id":"catalog-only","name":"Catalog only"}
 		],"agents":[{"name":"internal","models":["lite"]}]}}`), nil
